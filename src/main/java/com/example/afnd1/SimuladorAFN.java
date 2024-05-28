@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert.AlertType;
 
 import java.util.*;
 
@@ -18,7 +19,6 @@ public class SimuladorAFN {
     private int estadoInicial;
     private int estadoFinal;
     private String alfabeto;
-
 
     public SimuladorAFN() {
         this.tablaTransiciones = new HashMap<>();
@@ -90,11 +90,12 @@ public class SimuladorAFN {
     }
 
     public void imprimirTraza(String cadena) {
-        System.out.println("Resultado de la simulación");
-        System.out.println("Traza de la simulación:");
+        StringBuilder traza = new StringBuilder();
+        traza.append("Resultado de la simulación\n");
+        traza.append("Traza de la simulación:\n");
         estadosActuales = new HashSet<>();
         estadosActuales.add(estadoInicial);
-        System.out.println("\t" + cadena + " - q" + estadoInicial);
+        traza.append("\t").append(cadena).append(" - q").append(estadoInicial).append("\n");
 
         for (char simbolo : cadena.toCharArray()) {
             Set<Integer> siguientesEstados = new HashSet<>();
@@ -105,16 +106,24 @@ public class SimuladorAFN {
                 }
             }
             estadosActuales = siguientesEstados;
-            System.out.println(simbolo + " - " + estadosActuales);
+            traza.append(simbolo).append(" - ").append(estadosActuales).append("\n");
         }
 
-        System.out.println("Estado final: q" + estadoFinal);
+        traza.append("Estado final: q").append(estadoFinal).append("\n");
         if (estadosActuales.contains(estadoFinal)) {
-            System.out.println("Aceptación");
+            traza.append("Aceptación");
         } else {
-            System.out.println("Rechazo");
+            traza.append("Rechazo");
         }
+
+        // Mostrar la traza en una alerta
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Resultado de la simulación");
+        alert.setHeaderText(null);
+        alert.setContentText(traza.toString());
+        alert.showAndWait();
     }
+
     private Set<Integer> cierreEpsilon(int estado) {
         Set<Integer> cierre = new HashSet<>();
         cierre.add(estado);
@@ -195,9 +204,7 @@ public class SimuladorAFN {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 }
-
 
 
 
